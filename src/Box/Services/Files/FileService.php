@@ -111,6 +111,57 @@ class FileService extends BaseService
     }
 
     /**
+     * Method to downoad the file.
+     * @param string $file_id
+     * @return \GuzzleHttp\Psr7\Response
+     */
+    public function download($file_id)
+    {
+        return $this->guzzle_client->request(
+            'GET',
+            BAP::BASE_FILE_URL . BAP::URL_SEPARATOR . $file_id . BAP::URL_SEPARATOR . "content",
+            [
+                "headers" => $this->getAuthHeaders()
+            ]
+        );
+    }
+
+    /**
+     * Method to downoad the thumbnail.
+     * @param string $file_id
+     * @param int    $width
+     * @param int    $height
+     * 
+     * @return \GuzzleHttp\Psr7\Response
+     */
+    public function downloadThumbnail($file_id, int $width = 320, int $height = 320)
+    {
+        return $this->guzzle_client->request(
+            'GET',
+            BAP::BASE_FILE_URL . BAP::URL_SEPARATOR . $file_id . BAP::URL_SEPARATOR . "thumbnail.jpg?min_height=" . $height . '&min_width=' . $width,
+            [
+                "headers" => $this->getAuthHeaders()
+            ]
+        );
+    }
+
+    /**
+     * Method to get the file info
+     * @param string $file_id
+     * @return \GuzzleHttp\Psr7\Response
+     */
+    public function getFileInfo($file_id)
+    {
+        return $this->guzzle_client->request(
+            'GET',
+            BAP::BASE_FILE_URL . BAP::URL_SEPARATOR . $file_id,
+            [
+                "headers" => $this->getAuthHeaders()
+            ]
+        );
+    }
+
+    /**
      * Method to get embed url of an uploaded file
      * @param $file_id integer
      * @return String Embed url which has to be added to i-frame source
