@@ -7,7 +7,6 @@ use Linkstreet\Box\Enums\BoxAccessPoints as BAP;
 use Linkstreet\Box\Enums\ExceptionMessages;
 use Linkstreet\Box\Exceptions\Files\FileNotFoundException;
 use Linkstreet\Box\Services\BaseService;
-use Webmozart\Assert\Assert;
 
 /**
  * Class FileService
@@ -33,8 +32,6 @@ class FileService extends BaseService
      */
     public function uploadPreFlight($file_path = "", $folder_id = 0, $filename = null)
     {
-        Assert::integerish($folder_id, "The folder id must be an integer. Got: %s");
-
         $this->readFile($file_path);
 
         $filename = ((!is_null($filename)) ? $filename : basename($file_path));
@@ -80,8 +77,6 @@ class FileService extends BaseService
      */
     public function upload($file_path = "", $folder_id = 0, $filename = null)
     {
-        Assert::integerish($folder_id, "The folder id must be an integer. Got: %s");
-
         $handle = $this->readFile($file_path);
 
         $filename = ((!is_null($filename)) ? $filename : basename($file_path));
@@ -168,8 +163,6 @@ class FileService extends BaseService
      */
     public function getEmbedUrl($file_id)
     {
-        Assert::integer($file_id, 'file id has to be an integer. Got: %s');
-
         $response = $this->guzzle_client->request(
             'GET',
             BAP::BASE_FILE_URL . BAP::URL_SEPARATOR . $file_id . "?fields=expiring_embed_link",
@@ -191,8 +184,6 @@ class FileService extends BaseService
      */
     public function delete($file_id, $e_tag = null)
     {
-        Assert::integer($file_id, 'file id has to be an integer. Got: %s');
-
         $headers = $this->getAuthHeaders();
 
         if (!is_null($e_tag)) {
@@ -215,8 +206,6 @@ class FileService extends BaseService
      */
     public function destroyTrashedFile($file_id)
     {
-        Assert::integer($file_id, 'file id has to be an integer. Got: %s');
-
         return $this->guzzle_client->request(
             'DELETE',
             BAP::BASE_FILE_URL . BAP::URL_SEPARATOR . $file_id . BAP::URL_SEPARATOR . "trash",
@@ -241,12 +230,9 @@ class FileService extends BaseService
      */
     public function restore($trashed_file_id, $new_name = null, $parent_folder_id = null)
     {
-        Assert::integer($trashed_file_id, "The file id must be integer. Got: %s");
-
         $payload = [];
 
         if (!is_null($parent_folder_id)) {
-            Assert::integer($parent_folder_id, "The parent id must be integer. Got: %s");
             $payload['parent'] = [
                 "id" => (string)$parent_folder_id
             ];
